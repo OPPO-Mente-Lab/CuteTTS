@@ -1,0 +1,226 @@
+<!--
+  Copyright 2026 OPPO and Fudan University
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#f5f5f7" />
+    <title>CuteTTS</title>
+    <link rel="stylesheet" href="static/styles.css" />
+    <script src="static/app.js" defer></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <a class="brand" href="./" aria-label="CuteTTS">
+          <span class="brand-mark" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+          </span>
+          <span>CuteTTS</span>
+        </a>
+        <div class="language-selector">
+          <button id="language-toggle" class="language-toggle" type="button" aria-label="Language" aria-haspopup="menu" aria-expanded="false">
+            <svg class="language-icon" viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm0 0c2 0 3.6-3.6 3.6-8S12 2 10 2 6.4 5.6 6.4 10 8 18 10 18ZM2.4 10h15.2" />
+            </svg>
+            <span>Language</span>
+            <svg class="chevron" viewBox="0 0 12 12" aria-hidden="true"><path d="m3 4.5 3 3 3-3" /></svg>
+          </button>
+          <div id="language-menu" class="language-menu" role="menu" hidden>
+            <button type="button" role="menuitemradio" aria-checked="true" data-locale="en"><span>EN</span><span class="language-check">✓</span></button>
+            <button type="button" role="menuitemradio" aria-checked="false" data-locale="zh"><span>ZH</span><span class="language-check">✓</span></button>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section class="studio-card" aria-label="Speech generation studio">
+          <div class="runtime-bar">
+            <div class="status-group">
+              <span id="status-dot" class="status-dot loading" aria-hidden="true"></span>
+              <div>
+                <p id="status-text" class="status-text" role="status" aria-live="polite" data-i18n="connecting">
+                  Connecting to the model…
+                </p>
+                <p id="runtime-detail" class="runtime-detail">—</p>
+              </div>
+            </div>
+            <div id="model-chip" class="model-chip">CuteTTS</div>
+          </div>
+
+          <div class="runtime-selectors" aria-label="Runtime settings">
+            <label class="runtime-field">
+              <span data-i18n="modelLabel">Checkpoint</span>
+              <select id="model-select" aria-label="Checkpoint"></select>
+            </label>
+            <label class="runtime-field">
+              <span data-i18n="deviceLabel">Backend</span>
+              <select id="device-select" aria-label="Backend"></select>
+            </label>
+          </div>
+
+          <div class="section-block">
+            <div class="section-heading">
+              <div>
+                <p class="section-index">01</p>
+                <h2 data-i18n="modeTitle">Choose a mode</h2>
+              </div>
+              <p class="section-hint" data-i18n="modeHint">Both modes decode audio patch by patch.</p>
+            </div>
+            <div class="segmented-control" role="radiogroup" aria-label="Generation mode">
+              <button class="mode-button active" type="button" data-mode="reference" role="radio" aria-checked="true">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14.5a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 5c1.8-2.2 4.1-3.3 7-3.3s5.2 1.1 7 3.3M4 12H2m20 0h-2M12 4V2" /></svg>
+                <span data-i18n="referenceMode">Voice Clone</span>
+              </button>
+              <button class="mode-button" type="button" data-mode="tts" role="radio" aria-checked="false">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9v6m3-9v12m3-7v2m3-9v16m3-11v6m3-4v2" /></svg>
+                <span data-i18n="ttsMode">Text to Speech</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="reference-section" class="section-block">
+            <div class="section-heading compact">
+              <div>
+                <p class="section-index">02</p>
+                <h2 data-i18n="referenceTitle">Add a reference</h2>
+              </div>
+              <p class="section-hint" data-i18n="referenceHint">Audio · mono or stereo · 2–30 seconds</p>
+            </div>
+            <input id="reference-input" class="visually-hidden" type="file" accept="audio/*" />
+            <label id="drop-zone" class="drop-zone" for="reference-input" tabindex="0">
+              <span class="upload-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 13v5.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V13" /></svg>
+              </span>
+              <span class="drop-copy">
+                <strong data-i18n="dropPrimary">Drop a reference audio file here</strong>
+                <span data-i18n="dropSecondary">or click to choose a file</span>
+              </span>
+              <span class="choose-button" data-i18n="chooseFile">Choose file</span>
+            </label>
+            <div id="reference-file" class="reference-file" hidden>
+              <span class="file-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M5 3h9l5 5v13H5V3Zm9 0v5h5M8 14h1l1-3 2 6 2-6 1 3h1" /></svg>
+              </span>
+              <div class="file-copy">
+                <strong id="file-name"></strong>
+                <span id="file-meta"></span>
+              </div>
+              <button id="remove-reference" class="icon-button" type="button" data-i18n-aria="removeReference" aria-label="Remove reference">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17" /></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="section-block">
+            <div class="section-heading compact">
+              <div>
+                <p id="text-step" class="section-index">03</p>
+                <h2 data-i18n="textTitle">Write your text</h2>
+              </div>
+              <p class="section-hint"><span id="character-count">0</span> / 2000</p>
+            </div>
+            <textarea id="text-input" maxlength="2000" rows="5" data-i18n-placeholder="textPlaceholder" placeholder="Type what you want to hear…"></textarea>
+          </div>
+
+          <details id="advanced-settings" class="advanced-settings">
+            <summary>
+              <span data-i18n="advancedTitle">Advanced settings</span>
+              <small data-i18n="advancedHint">Sampling parameters</small>
+            </summary>
+            <div class="advanced-grid">
+              <label>
+                <span data-i18n="cfgStrength">CFG strength</span>
+                <input id="cfg-input" type="number" min="0" step="0.1" value="2" />
+              </label>
+              <label>
+                <span data-i18n="diffusionSteps">Diffusion steps</span>
+                <input id="steps-input" type="number" min="1" step="1" value="10" />
+              </label>
+              <label id="sway-field">
+                <span data-i18n="sway">Sway</span>
+                <input id="sway-input" type="number" min="-1" max="1.751938" step="0.05" value="-0.8" />
+              </label>
+              <label>
+                <span data-i18n="seed">Seed</span>
+                <input id="seed-input" type="number" step="1" value="42" />
+              </label>
+            </div>
+          </details>
+
+          <div id="form-error" class="form-error" role="alert" hidden></div>
+
+          <button id="generate-button" class="generate-button" type="button" disabled>
+            <span class="button-label" data-i18n="generate">Generate speech</span>
+            <span class="button-loading" aria-hidden="true"><span class="spinner"></span><span data-i18n="generating">Generating…</span></span>
+            <svg class="button-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5" /></svg>
+          </button>
+          <p id="button-reason" class="button-reason" data-i18n="waitingModel">Waiting for the model to be ready.</p>
+        </section>
+
+        <section id="result-card" class="result-card" aria-labelledby="result-title" hidden>
+          <div class="result-header">
+            <div>
+              <p class="eyebrow" data-i18n="resultEyebrow">Output</p>
+              <h2 id="result-title" data-i18n="resultTitle">Generated audio</h2>
+            </div>
+            <span id="live-badge" class="live-badge"><span></span><span data-i18n="live">Live</span></span>
+          </div>
+
+          <div class="stream-player">
+            <div class="player-controls">
+              <button id="stream-play-button" class="stream-play-button" type="button" data-i18n-aria="pauseAudio" aria-label="Pause audio">
+                <svg class="play-symbol" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 7 9 5-9 5V7Z" /></svg>
+                <svg class="pause-symbol" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7v10M15 7v10" /></svg>
+              </button>
+              <div class="player-timeline">
+                <canvas id="waveform-canvas" class="waveform-canvas" aria-hidden="true"></canvas>
+                <input id="stream-progress" class="stream-progress" type="range" min="0" max="0" value="0" step="0.01" data-i18n-aria="seekAudio" aria-label="Seek audio" disabled />
+              </div>
+              <div class="player-time">
+                <span id="stream-position">0:00</span>
+                <span aria-hidden="true">/</span>
+                <span id="stream-duration">0:00</span>
+              </div>
+              <a id="player-download" class="player-download" href="#" data-i18n-aria="downloadAudio" aria-label="Download audio" hidden>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5M5 19h14" /></svg>
+              </a>
+            </div>
+            <div class="stream-meta">
+              <span id="stream-status" data-i18n="waitingAudio">Waiting for first audio…</span>
+              <span id="patch-status"></span>
+            </div>
+          </div>
+
+          <div id="metrics-grid" class="metrics-grid" hidden>
+            <div class="metric"><span data-i18n="latency">Latency</span><strong id="metric-latency">—</strong></div>
+            <div class="metric"><span data-i18n="audioLength">Audio length</span><strong id="metric-duration">—</strong></div>
+            <div class="metric"><span data-i18n="generationTime">Generation time</span><strong id="metric-generation">—</strong></div>
+            <div class="metric"><span data-i18n="rtf">RTF</span><strong id="metric-rtf">—</strong></div>
+          </div>
+
+        </section>
+      </main>
+
+      <footer>
+        <span data-i18n="footer">Runs locally. Uploaded references and results expire automatically.</span>
+      </footer>
+    </div>
+  </body>
+</html>

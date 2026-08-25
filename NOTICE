@@ -1,0 +1,36 @@
+CuteTTS
+Copyright 2026 OPPO and Fudan University
+
+CuteTTS is licensed under the Apache License, Version 2.0, except for
+third-party portions identified below.
+
+=======================================================================
+Descript Audio Codec (DAC)
+=======================================================================
+
+Source: https://github.com/descriptinc/descript-audio-codec
+Copyright (c) 2023-present, Descript
+License: MIT
+
+Portions are used in:
+src/cutetts/audio_codec/model/audio_vae.py
+
+The code was adapted for causal audio encoding/decoding, variational latent
+modeling, and integration with CuteTTS.
+
+The complete license text is available in LICENSES/DAC-MIT.txt.
+
+=======================================================================
+F5-TTS
+=======================================================================
+
+Source: https://github.com/SWivid/F5-TTS
+Copyright (c) 2024 Yushen CHEN
+License: MIT
+
+The Sway Sampling schedule is used in:
+src/cutetts/modeling/diffusion_head.py
+
+The code was adapted for integration with the CuteTTS Euler sampler.
+
+The complete license text is available in LICENSES/F5-TTS-MIT.txt.

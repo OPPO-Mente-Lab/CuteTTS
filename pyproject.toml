@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cutetts"
+version = "0.1.0"
+description = "Inference and local web demo for CuteTTS"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+license-files = [
+  "LICENSE",
+  "NOTICE",
+  "LICENSES/*.txt",
+]
+dependencies = [
+  "fastapi>=0.115,<1",
+  "loguru>=0.7,<1",
+  "numpy>=1.26,<3",
+  "python-multipart>=0.0.18,<1",
+  "safetensors>=0.4.5,<1",
+  "sentencepiece>=0.2,<1",
+  "soundfile>=0.12,<1",
+  "torch==2.5.1",
+  "torchaudio==2.5.1",
+  "tqdm>=4.66,<5",
+  "transformers==4.51.0",
+  "uvicorn[standard]>=0.34,<1",
+]
+
+[project.scripts]
+cutetts = "cutetts.cli:main"
+cutetts-demo = "cutetts.web_demo:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+cutetts = ["demo/static/*"]
+
+[tool.setuptools.data-files]
+"share/cutetts" = ["assets/default_reference.wav"]
